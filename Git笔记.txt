@@ -1,0 +1,218 @@
+创建一个Git仓库
+第一步：选择一个合适的地方创建一个空目录
+第二步：通过git init命令把这个目录变成Git可以管理的仓库
+git init
+创建好了之后会出现一个.git文件夹
+创建一个Git测试文件.txt
+文件的内容如下：
+Git is a version control system.
+Git is free software.
+添加文件
+第一步：用命令git add告诉Git，把文件添加到仓库
+例如： git add Git测试文件
+第二步：用命令git commit告诉Git，把文件提交到仓库
+例如： git commit -m "写了一个Git测试文件"
+结果：
+[master (root-commit) 5665008] 写了一个Git测试文件
+ 1 file changed, 2 insertions(+)
+ create mode 100644 "Git\346\265\213\350\257\225\346\226\207\344\273\266.txt"
+-m 后面是提交的说明。
+
+
+现在将Git测试文件修改成如下样式：
+Git is a distributed version control system.
+Git is free software.
+
+现在，运行git status命令查看结果
+例如：git status
+结果：
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   "Git\346\265\213\350\257\225\346\226\207\344\273\266.txt"
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        "Git\347\254\224\350\256\260.txt"
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+git status 命令是让我们时刻掌握仓库当前的状态。
+上面的结果是Git测试文件已经被修改。
+
+git diff <文件名> 可以显示具体修改的内容
+例如：git diff Git测试文件
+结果：
+diff --git "a/Git\346\265\213\350\257\225\346\226\207\344\273\266.txt" "b/Git\346\265\213\350\257\225\346\226\207\344\273\266.txt"
+index d8036c1..013b5bc 100644
+--- "a/Git\346\265\213\350\257\225\346\226\207\344\273\266.txt"
++++ "b/Git\346\265\213\350\257\225\346\226\207\344\273\266.txt"
+@@ -1,2 +1,2 @@
+-Git is a version control system.
++Git is a distributed version control system.
+ Git is free software.
+\ No newline at end of file
+
+然后可以继续使用之前的命令提交新文件
+
+git add Git测试文件.txt
+
+再使用git status
+git status
+结果：
+On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        modified:   "Git\346\265\213\350\257\225\346\226\207\344\273\266.txt"
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        "Git\347\254\224\350\256\260.txt"
+
+git status 告诉了，将要被提交的修改包括Git测试文件.txt
+然后提交
+git commit -m "新加distributed"
+结果：
+[master 2d1f516] 新加distributed
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+git status
+On branch master
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        "Git\347\254\224\350\256\260.txt"
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+版本回退
+
+修改Git测试文件.txt为如下内容：
+Git is a distributed version control system.
+Git is free software distributed under the GPL.
+
+然后提交。
+
+使用git log 查看版本信息
+
+git log
+结果：
+commit ec6153d97303cd89a2152eae77d1c42688393853
+Author: 孟晨 <1293141942@qq.com>
+Date:   Tue Jun 6 20:45:54 2017 +0800
+
+    新加GPL
+
+commit 2d1f516d9137fe89d3eb6c8ca835afe60b997a0c
+Author: 孟晨 <1293141942@qq.com>
+Date:   Tue Jun 6 20:38:03 2017 +0800
+
+    新加distributed
+
+commit 566500832250b1ade878d8f147d86c586b5eba77
+Author: 孟晨 <1293141942@qq.com>
+Date:   Tue Jun 6 20:15:01 2017 +0800
+
+    写了一个Git测试文件
+
+如果嫌弃信息太多时可以加上--pretty=oneline
+git log --pretty=oneline
+结果：
+ec6153d97303cd89a2152eae77d1c42688393853 新加GPL
+2d1f516d9137fe89d3eb6c8ca835afe60b997a0c 新加distributed
+566500832250b1ade878d8f147d86c586b5eba77 写了一个Git测试文件
+
+“ec6153d97303cd89a2152eae77d1c42688393853”这些数字时版本号
+
+回退上一个版本使用 HEAD^, 上上一个版本是HEAD^^,
+往上100个版本是HEAD~100。
+
+回退上一个版本：
+git reset --hard HEAD^
+结果：
+HEAD is now at 2d1f516 新加distributed
+
+现在的Git测试文件的内容是：
+Git is a distributed version control system.
+Git is free software.
+
+当再次使用git log 命令是已经看不到"新加GPL"这个版本了
+例如：
+git log
+结果：
+commit 2d1f516d9137fe89d3eb6c8ca835afe60b997a0c
+Author: 孟晨 <1293141942@qq.com>
+Date:   Tue Jun 6 20:38:03 2017 +0800
+
+    新加distributed
+
+commit 566500832250b1ade878d8f147d86c586b5eba77
+Author: 孟晨 <1293141942@qq.com>
+Date:   Tue Jun 6 20:15:01 2017 +0800
+
+    写了一个Git测试文件
+
+可以使用git reset --hard Commit_id(版本号)来进入上一个版本
+例如：
+git reset --hard ec6153d
+结果：
+HEAD is now at ec6153d 新加GPL
+
+版本号没有必要写全，前几位就可以。但是太少时Git就不能确定是哪一个。
+这个命令只要记住版本号即可。
+git 还提供了git reflog命令记录每一次的命令。
+例如：
+git reflog 
+结果：
+ec6153d HEAD@{0}: reset: moving to ec6153d
+2d1f516 HEAD@{1}: reset: moving to HEAD^
+ec6153d HEAD@{2}: commit: 新加GPL
+2d1f516 HEAD@{3}: commit: 新加distributed
+5665008 HEAD@{4}: commit (initial): 写了一个Git测试文件
+
+工作区和暂存区
+
+工作区：
+就是电脑中能看见的目录，例如“Git测试”就是一个工作区
+版本库
+工作区中有一个隐藏目录".git"，这个时Git的版本库。
+Git的版本库中的index
+add -> index -> (HEAD指针)master
+
+
+git diff HEAD -- <文件名> 命令可以查看工作区和版本库里面最新版本的区别
+例如：
+git diff HEAD -- Git测试文件.txt
+结果：
+diff --git "a/Git\346\265\213\350\257\225\346\226\207\344\273\266.txt" "b/Git\346\265\213\350\257\225\346\226\207\344\273\266.txt"
+index db28b2c..9a8b341 100644
+--- "a/Git\346\265\213\350\257\225\346\226\207\344\273\266.txt"
++++ "b/Git\346\265\213\350\257\225\346\226\207\344\273\266.txt"
+@@ -1,4 +1,4 @@
+ Git is a distributed version control system.
+ Git is free software distributed under the GPL.
+ Git has a mutable index called stage.
+-Git tracks changes.
+\ No newline at end of file
++Git tracks changes of files.
+\ No newline at end of file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
